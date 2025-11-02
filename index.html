@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitor Analysis Tool - Product Manager</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-chart-line"></i> Competitor Analysis Tool</h1>
+                <p class="subtitle">Strategic insights for product managers</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportAnalysis()">
+                    <i class="fas fa-download"></i> Export Analysis
+                </button>
+                <button class="btn btn-primary" onclick="showAddCompetitorModal()">
+                    <i class="fas fa-plus"></i> Add Competitor
+                </button>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="showTab('dashboard')">
+                <i class="fas fa-home"></i> Dashboard
+            </button>
+            <button class="tab-btn" onclick="showTab('competitors')">
+                <i class="fas fa-users"></i> Competitors
+            </button>
+            <button class="tab-btn" onclick="showTab('features')">
+                <i class="fas fa-table"></i> Feature Comparison
+            </button>
+            <button class="tab-btn" onclick="showTab('swot')">
+                <i class="fas fa-tasks"></i> SWOT Analysis
+            </button>
+            <button class="tab-btn" onclick="showTab('pricing')">
+                <i class="fas fa-dollar-sign"></i> Pricing
+            </button>
+            <button class="tab-btn" onclick="showTab('positioning')">
+                <i class="fas fa-map-marked-alt"></i> Market Position
+            </button>
+        </nav>
+
+        <main>
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-grid">
+                    <div class="card stats-card">
+                        <h3><i class="fas fa-users"></i> Total Competitors</h3>
+                        <div class="stat-value" id="totalCompetitors">0</div>
+                    </div>
+                    <div class="card stats-card">
+                        <h3><i class="fas fa-chart-bar"></i> Features Tracked</h3>
+                        <div class="stat-value" id="totalFeatures">0</div>
+                    </div>
+                    <div class="card stats-card">
+                        <h3><i class="fas fa-star"></i> Avg. Rating</h3>
+                        <div class="stat-value" id="avgRating">-</div>
+                    </div>
+                    <div class="card stats-card">
+                        <h3><i class="fas fa-trophy"></i> Market Leader</h3>
+                        <div class="stat-value" id="marketLeader">-</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Quick Overview</h2>
+                    <div id="competitorOverview" class="overview-list">
+                        <p class="empty-state">No competitors added yet. Click "Add Competitor" to get started!</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Recent Analysis</h2>
+                    <div id="recentAnalysis">
+                        <p class="empty-state">Your competitor analysis data will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Competitors Tab -->
+            <div id="competitors" class="tab-content">
+                <div class="card">
+                    <h2>Competitor Profiles</h2>
+                    <div id="competitorList" class="competitor-grid">
+                        <p class="empty-state">No competitors added yet.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Comparison Tab -->
+            <div id="features" class="tab-content">
+                <div class="card">
+                    <div class="section-header">
+                        <h2>Feature Comparison Matrix</h2>
+                        <button class="btn btn-secondary" onclick="showAddFeatureModal()">
+                            <i class="fas fa-plus"></i> Add Feature
+                        </button>
+                    </div>
+                    <div id="featureMatrix" class="table-container">
+                        <p class="empty-state">Add competitors and features to build your comparison matrix.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SWOT Analysis Tab -->
+            <div id="swot" class="tab-content">
+                <div class="card">
+                    <h2>SWOT Analysis</h2>
+                    <div class="form-group">
+                        <label>Select Competitor:</label>
+                        <select id="swotCompetitorSelect" onchange="loadSWOT()">
+                            <option value="">Select a competitor...</option>
+                        </select>
+                    </div>
+                    <div id="swotContainer" class="swot-grid">
+                        <p class="empty-state">Select a competitor to view or edit SWOT analysis.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Tab -->
+            <div id="pricing" class="tab-content">
+                <div class="card">
+                    <h2>Pricing Comparison</h2>
+                    <div id="pricingTable" class="table-container">
+                        <p class="empty-state">Add competitors with pricing information to see comparison.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Positioning Tab -->
+            <div id="positioning" class="tab-content">
+                <div class="card">
+                    <h2>Market Positioning Map</h2>
+                    <div class="positioning-controls">
+                        <div class="form-group">
+                            <label>X-Axis (Horizontal):</label>
+                            <select id="xAxisSelect">
+                                <option value="price">Price (Low to High)</option>
+                                <option value="features">Feature Richness</option>
+                                <option value="marketShare">Market Share</option>
+                                <option value="customerSatisfaction">Customer Satisfaction</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Y-Axis (Vertical):</label>
+                            <select id="yAxisSelect">
+                                <option value="quality">Quality</option>
+                                <option value="innovation">Innovation</option>
+                                <option value="marketShare">Market Share</option>
+                                <option value="customerSatisfaction">Customer Satisfaction</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="renderPositioningMap()">
+                            <i class="fas fa-sync"></i> Update Map
+                        </button>
+                    </div>
+                    <div id="positioningMap" class="positioning-map-container">
+                        <canvas id="positioningCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Competitor Modal -->
+    <div id="addCompetitorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Competitor</h2>
+                <button class="close-btn" onclick="closeModal('addCompetitorModal')">&times;</button>
+            </div>
+            <form id="competitorForm" onsubmit="addCompetitor(event)">
+                <div class="form-group">
+                    <label>Company Name *</label>
+                    <input type="text" id="companyName" required>
+                </div>
+                <div class="form-group">
+                    <label>Website</label>
+                    <input type="url" id="website" placeholder="https://example.com">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Market Share (%)</label>
+                        <input type="number" id="marketShare" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Founded Year</label>
+                        <input type="number" id="foundedYear" min="1900" max="2024">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rating (1-5)</label>
+                        <input type="number" id="rating" min="1" max="5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Employees</label>
+                        <input type="number" id="employees" min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Pricing Model</label>
+                    <select id="pricingModel">
+                        <option value="">Select...</option>
+                        <option value="freemium">Freemium</option>
+                        <option value="subscription">Subscription</option>
+                        <option value="one-time">One-time Purchase</option>
+                        <option value="usage-based">Usage-based</option>
+                        <option value="enterprise">Enterprise</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Starting Price</label>
+                    <input type="text" id="startingPrice" placeholder="$99/month">
+                </div>
+                <div class="form-group">
+                    <label>Target Market</label>
+                    <input type="text" id="targetMarket" placeholder="e.g., Enterprise, SMB, Consumers">
+                </div>
+                <div class="form-group">
+                    <label>Key Strengths</label>
+                    <textarea id="strengths" rows="3" placeholder="What are they good at?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Key Weaknesses</label>
+                    <textarea id="weaknesses" rows="3" placeholder="What are their limitations?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="notes" rows="3" placeholder="Additional observations..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addCompetitorModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Competitor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Feature Modal -->
+    <div id="addFeatureModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Feature to Compare</h2>
+                <button class="close-btn" onclick="closeModal('addFeatureModal')">&times;</button>
+            </div>
+            <form id="featureForm" onsubmit="addFeature(event)">
+                <div class="form-group">
+                    <label>Feature Name *</label>
+                    <input type="text" id="featureName" required placeholder="e.g., Mobile App, API Access">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="featureCategory">
+                        <option value="core">Core Features</option>
+                        <option value="integration">Integrations</option>
+                        <option value="support">Support</option>
+                        <option value="security">Security</option>
+                        <option value="analytics">Analytics</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="featureDescription" rows="2" placeholder="Brief description of the feature"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addFeatureModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Feature</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Competitor Modal -->
+    <div id="editCompetitorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Competitor</h2>
+                <button class="close-btn" onclick="closeModal('editCompetitorModal')">&times;</button>
+            </div>
+            <form id="editCompetitorForm" onsubmit="updateCompetitor(event)">
+                <input type="hidden" id="editCompetitorId">
+                <div class="form-group">
+                    <label>Company Name *</label>
+                    <input type="text" id="editCompanyName" required>
+                </div>
+                <div class="form-group">
+                    <label>Website</label>
+                    <input type="url" id="editWebsite">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Market Share (%)</label>
+                        <input type="number" id="editMarketShare" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Founded Year</label>
+                        <input type="number" id="editFoundedYear" min="1900" max="2024">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rating (1-5)</label>
+                        <input type="number" id="editRating" min="1" max="5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Employees</label>
+                        <input type="number" id="editEmployees" min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Pricing Model</label>
+                    <select id="editPricingModel">
+                        <option value="">Select...</option>
+                        <option value="freemium">Freemium</option>
+                        <option value="subscription">Subscription</option>
+                        <option value="one-time">One-time Purchase</option>
+                        <option value="usage-based">Usage-based</option>
+                        <option value="enterprise">Enterprise</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Starting Price</label>
+                    <input type="text" id="editStartingPrice">
+                </div>
+                <div class="form-group">
+                    <label>Target Market</label>
+                    <input type="text" id="editTargetMarket">
+                </div>
+                <div class="form-group">
+                    <label>Key Strengths</label>
+                    <textarea id="editStrengths" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Key Weaknesses</label>
+                    <textarea id="editWeaknesses" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="editNotes" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editCompetitorModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Competitor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
